@@ -101,7 +101,9 @@ func StartSearching(endPos) -> void:
 			var NearCell = FindCellByPos(NearPo)		# ищем сам селл
 #			var NearCell = Cells[usedC.find(NearPo)]# берем связанный Cell object
 #			NearCell.pos = NearPo
-			var put = curCell.CheapestPath + (NearPo - curCell.pos).length()	# cчитаем кратчайший путь до соседа
+			print("NearCellPos: ", NearCell.pos)
+			var put = curCell.CheapestPath + (NearCell.pos - curCell.pos).length()	# cчитаем кратчайший путь до соседа
+			print("Put: ", put)
 			if(put < NearCell.CheapestPath):			# если он оказался меньше
 				NearCell.CameFrom = curCell			# ставим соседу откуда пришёл
 				NearCell.CheapestPath = put			# задаём сам путь
@@ -111,7 +113,9 @@ func StartSearching(endPos) -> void:
 					OpenQ.append(NearCell)
 				
 			
-		print("OpenQ after appending: ", OpenQ)
+#		print("OpenQ after appending: ", OpenQ)
+		print("OpenQPos after checking neighbours:")
+		PrintOpenQPos()
 #		PrintOpenQScores()
 #		OpenQ.sort_custom(CustomSorter, "sort_ascending")
 #		print("OpenQ after sorting: ", OpenQ)
@@ -122,6 +126,12 @@ func StartSearching(endPos) -> void:
 	print("While finished!")
 	ReconstructWay()
 	pass
+
+
+func PrintOpenQPos() -> void:
+	print("\nPrintOpenQPos:")
+	for cell in OpenQ:
+		print(cell.pos)
 
 
 func PrintOpenQScores() -> void:
@@ -139,6 +149,7 @@ class CustomSorter:
 
 func ReconstructWay() -> void:
 	pass
+
 
 # Эвристическая функция оценки расстояния до цели (просто считает длину вектора из переданной точки до финальной)
 func h(pos, endpos) -> float:
