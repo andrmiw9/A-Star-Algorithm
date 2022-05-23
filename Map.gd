@@ -26,12 +26,12 @@ class Cell:
 
 
 func _ready() -> void:
-	var toggleDebug := true
+	var toggleDebug := false
 	if(toggleDebug):
 		OS.window_size = Vector2(1075,640)
 		OS.window_position = Vector2(0,1200)
 		OS.current_screen = 1
-	var debugNout := false
+	var debugNout := true
 	if(debugNout):
 		OS.window_size = Vector2(800, 500)
 		OS.window_position = Vector2(0,540)
@@ -83,7 +83,7 @@ func StartSearching(endPos) -> void:
 	curCell.Score = h(curCell.pos, endPos)		# запускаем оценку для нач точки
 	OpenQ.push_front(curCell)					# добавляем нач точку
 	
-	
+	print("\nSTART\n")
 	while !OpenQ.empty():			# Main loop
 		# f(n) = g(n) + h(n), n - next node to path, g(n) - уже пройденный путь, h - эвристика
 		curCell = FindMinScoreInQ()[1]
@@ -92,6 +92,7 @@ func StartSearching(endPos) -> void:
 			return
 		
 		OpenQ.remove(OpenQ.find(curCell))
+		set_cellv(curCell.pos, 6)
 		
 		var points_nearBy = [curCell.pos + Vector2.UP, curCell.pos + Vector2.RIGHT, curCell.pos + Vector2.DOWN, curCell.pos + Vector2.LEFT]
 		for NearPo in points_nearBy:					# берем cell
@@ -108,14 +109,36 @@ func StartSearching(endPos) -> void:
 				
 				if(!OpenQ.has(NearCell)):
 					OpenQ.append(NearCell)
+				
 			
 		print("OpenQ after appending: ", OpenQ)
-#		print("OpenQ pos-s:")
-	
+#		PrintOpenQScores()
+#		OpenQ.sort_custom(CustomSorter, "sort_ascending")
+#		print("OpenQ after sorting: ", OpenQ)
+#		PrintOpenQScores()
 		CustomDraw()
+		yield(get_tree().create_timer(0.3), "timeout")
 #		update()
+	print("While finished!")
+	ReconstructWay()
 	pass
 
+
+func PrintOpenQScores() -> void:
+	print("\nPrintOpenQScores:")
+	for cell in OpenQ:
+		print(cell.Score)
+
+
+class CustomSorter:
+	static func sort_ascending(a, b):
+		if a.pos < b.pos:
+			return true
+		return false
+
+
+func ReconstructWay() -> void:
+	pass
 
 # Эвристическая функция оценки расстояния до цели (просто считает длину вектора из переданной точки до финальной)
 func h(pos, endpos) -> float:
@@ -135,7 +158,7 @@ func FindMinScoreInQ() -> Array:
 	var minim = 1000000
 	var c = null
 	for cell in OpenQ:
-		if(cell.Score < minim):
+		if(cell.Score <= minim):
 			c = cell
 			minim = cell.Score
 	return [minim, c]
@@ -159,43 +182,5 @@ func CustomDraw() -> void:
 #		pass
 #
 
-
-
 #draw_line(last_point, current_point, DRAW_COLOR, BASE_LINE_WIDTH, true)
-#		draw_circle(current_point, BASE_LINE_WIDTH * 2.0, DRAW_COLOR)
-
-
-#func _draw():
-#	if not _point_path:
-#		return
-#	var point_start = _point_path[0]
-#	var point_end = _point_path[len(_point_path) - 1]
-#
-#	set_cell(point_start.x, point_start.y, 1)
-#	set_cell(point_end.x, point_end.y, 2)
-#
-#	var last_point = map_to_world(Vector2(point_start.x, point_start.y)) + _half_cell_size
-#	for index in range(1, len(_point_path)):
-#		var current_point = map_to_world(Vector2(_point_path[index].x, _point_path[index].y)) + _half_cell_size
-#		draw_line(last_point, current_point, DRAW_COLOR, BASE_LINE_WIDTH, true)
-#		draw_circle(current_point, BASE_LINE_WIDTH * 2.0, DRAW_COLOR)
-#		last_point = current_point
-
-#func astar_connect_walkable_cells(points_array):
-#	for point in points_array:
-#		var point_index = calculate_point_index(point)
-#		# For every cell in the map, we check the one to the top, right.
-#		# left and bottom of it. If it's in the map and not an obstalce.
-#		# We connect the current point with it.
-#		fwffawfafwa
-#		for point_relative in points_relative:
-#			var point_relative_index = calculate_point_index(point_relative)
-#			if is_outside_map_bounds(point_relative):
-#				continue
-#			if not astar_node.has_point(point_relative_index):
-#				continue
-#			# Note the 3rd argument. It tells the astar_node that we want the
-#			# connection to be bilateral: from point A to B and B to A.
-#			# If you set this value to false, it becomes a one-way path.
-#			# As we loop through all points we can set it to false.
-#			astar_node.connect_points(point_index, point_relative_index, false)
+#		draw_circle(current_point, BASE_LINE_WIDTH * 2.0, DRAW_COLOR
