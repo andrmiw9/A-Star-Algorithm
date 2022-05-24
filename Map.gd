@@ -88,15 +88,18 @@ func StartSearching(endPos) -> void:
 	
 	print("\nSTART\n")
 	while !OpenQ.empty():			# Main loop
+		CustomDraw()
 		# f(n) = g(n) + h(n), n - next node to path, g(n) - уже пройденный путь, h - эвристика
 		print("\nWhile iteration")
 		curCell = FindMinScoreInQ()[1]
 		if(curCell.pos == endPos):
+			set_cellv(curCell.pos, 5)
 			print("Find the EndPos!")
 			break
 		print("Now looking at:", curCell.pos)
 		OpenQ.remove(OpenQ.find(curCell))
-		set_cellv(curCell.pos, 6)
+		if(curCell.pos != StartPos):
+			set_cellv(curCell.pos, 6)
 		curCell.isClosed = true
 		
 		var points_nearBy = [curCell.pos + Vector2.UP, curCell.pos + Vector2.RIGHT, curCell.pos + Vector2.DOWN, curCell.pos + Vector2.LEFT]
@@ -128,10 +131,12 @@ func StartSearching(endPos) -> void:
 #		OpenQ.sort_custom(CustomSorter, "sort_ascending")
 #		print("OpenQ after sorting: ", OpenQ)
 #		PrintOpenQScores()
-		CustomDraw()
+		
 		iterCount += 1
 		yield(get_tree().create_timer(0.1), "timeout")
 #		update()
+	
+	
 	print("\nWhile finished!")
 	print("Number of iterations: ", iterCount)
 	ReconstructWay()
@@ -140,6 +145,7 @@ func StartSearching(endPos) -> void:
 
 
 func ReconstructWay() -> void:
+	
 	pass
 
 
@@ -159,12 +165,6 @@ func PrintOpenQScores() -> void:
 	for cell in OpenQ:
 		print(cell.Score)
 # --------------------------------------------
-
-#class CustomSorter:
-#	static func sort_ascending(a, b):
-#		if a.pos < b.pos:
-#			return true
-#		return false
 
 
 # Эвристическая функция оценки расстояния до цели (просто считает длину вектора из переданной точки до финальной)
@@ -196,6 +196,8 @@ func CustomDraw() -> void:
 #		for p in Closed:
 #			set_cellv(p, 6)
 		for cell in OpenQ:
+			if(cell.pos == StartPos):
+				continue
 			set_cellv(cell.pos, 7)
 	pass
 
