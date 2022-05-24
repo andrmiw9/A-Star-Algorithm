@@ -108,6 +108,6 @@ tile_data = PoolIntArray( 65543, 3, 0, 65544, 3, 0, 65545, 3, 0, 65546, 3, 0, 65
 script = ExtResource( 4 )
 
 [node name="Player" type="Sprite" parent="Map"]
-position = Vector2( 416, 224 )
+position = Vector2( 803, 290 )
 texture = ExtResource( 3 )
 script = ExtResource( 5 )
