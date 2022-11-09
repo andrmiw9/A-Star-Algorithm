@@ -1,6 +1,6 @@
 extends TileMap
 
-onready var player = $""../Player""	# ссылка на игрока
+onready var player = $"../Player"	# ссылка на игрока
 var StartPos := Vector2.ZERO		# глобальный вектор старт позиции
 var Trueway := []				# the final way of cells
 var OpenList := []				# priority queue of tiles, that will be used to find a way
